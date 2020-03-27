@@ -7,6 +7,7 @@ import { resolvers } from "./resolvers";
 import { getMe, createToken } from "./helpers";
 
 const server = new ApolloServer({
+  introspection: true,
   typeDefs,
   resolvers,
   context: async ({ req }) => {
