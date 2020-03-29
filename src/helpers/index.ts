@@ -5,7 +5,7 @@ import { AuthenticationError, ForbiddenError, UserInputError, ApolloError } from
 import { DocumentNode } from "graphql";
 
 export const getMe = async (req: any) => {
-  const authorization = req.headers['authorization'];
+  const authorization = req.headers['x-token'];
 
   if (authorization) {
     const [Bearer, token] = authorization.split(' ');
