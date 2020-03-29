@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import md5 from "md5";
 import { query } from "graphqurl";
 import { AuthenticationError, ForbiddenError, UserInputError, ApolloError } from "apollo-server";
 import { DocumentNode } from "graphql";
@@ -28,6 +29,10 @@ export const createToken = async (data: any, error: Error) => {
     throw error;
   }
 }
+
+export const generatePasswordHash = (password: string) => {
+  return md5(password);
+};
 
 export const doQuery = async (GQLQuery: DocumentNode, GQLVariables: any) => {
   try {
