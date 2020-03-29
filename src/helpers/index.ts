@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { query } from "graphqurl";
-import { AuthenticationError, ForbiddenError } from "apollo-server";
+import { AuthenticationError, ForbiddenError, UserInputError, ApolloError } from "apollo-server";
 import { DocumentNode } from "graphql";
 
 export const getMe = async (req: any) => {
@@ -21,8 +21,12 @@ export const getMe = async (req: any) => {
   }
 };
 
-export const createToken = async (data: any) => {
-  return await jwt.sign(data, process.env.HASURA_SECRET)
+export const createToken = async (data: any, error: Error) => {
+  try {
+    return await jwt.sign(data, process.env.HASURA_SECRET);
+  } catch (e) {
+    throw error;
+  }
 }
 
 export const doQuery = async (GQLQuery: DocumentNode, GQLVariables: any) => {
@@ -38,8 +42,8 @@ export const doQuery = async (GQLQuery: DocumentNode, GQLVariables: any) => {
       }
     );
 
-    return data.users[0];
-  } catch (e) {
-    throw new ForbiddenError('Not user found.');
+    return data;
+  } catch (error) {
+    throw error;
   }
 };
