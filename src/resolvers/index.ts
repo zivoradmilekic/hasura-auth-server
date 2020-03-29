@@ -18,7 +18,9 @@ export const resolvers = {
           throw error;
         }
       }
-    ),
+    )
+  },
+  Mutation: {
     login: async (parent: any, { email, password }: any, { createToken }: any) => {
       console.log('login', email, password, generatePasswordHash(password));
 
@@ -38,8 +40,6 @@ export const resolvers = {
         throw error;
       }
     },
-  },
-  Mutation: {
     signup: async (parent: any, { name, username, email, password }: any, { createToken }: any) => {
       console.log('signup', parent, name, username, email, password);
 
@@ -60,6 +60,6 @@ export const resolvers = {
       } catch (error) {
         throw error;
       }
-    },
+    }
   }
 };

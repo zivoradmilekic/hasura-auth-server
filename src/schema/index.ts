@@ -18,13 +18,13 @@ export default gql`
   # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
     me: User
+  }
+
+  type Mutation {
     login(
       email: String!
       password: String!
     ): Token
-  }
-
-  type Mutation {
     signup(
       name: String!
       username: String!
