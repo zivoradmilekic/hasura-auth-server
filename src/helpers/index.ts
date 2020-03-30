@@ -12,7 +12,7 @@ export const getMe = async (req: any) => {
 
     if (token) {
       try {
-        return await jwt.verify(token, process.env.HASURA_SECRET);
+        return { id: token };// await jwt.verify(token, process.env.HASURA_SECRET);
       } catch (e) {
         throw new AuthenticationError(
           'Your session expired. Sign in again.',
@@ -24,7 +24,7 @@ export const getMe = async (req: any) => {
 
 export const createToken = async (data: any, error: Error) => {
   try {
-    return await jwt.sign(data, process.env.HASURA_SECRET);
+    return data.id;// await jwt.sign(data, process.env.HASURA_SECRET);
   } catch (e) {
     throw error;
   }
