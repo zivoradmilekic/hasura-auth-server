@@ -1,37 +1,48 @@
 import jwt from "jsonwebtoken";
 import md5 from "md5";
 import { query } from "graphqurl";
-import { AuthenticationError, ForbiddenError, UserInputError, ApolloError } from "apollo-server";
 import { DocumentNode } from "graphql";
 
-export const getMe = async (req: any) => {
-  const authorization = req.headers['x-token'];
+const getGravatar = (email: string) => {
+  return `https://www.gravatar.com/avatar/${md5(email || '')}?d=mp`;
+}
 
+export const generateAccessToken = ({id, name, username, email}: any, secret: jwt.Secret) => {
+  const tokenContents = {
+    sub: id,
+    name: name,
+    username: username,
+    emial: email,
+    gravatar: getGravatar(email),
+    iat: Date.now() / 1000,
+    // iss: 'https://myapp.com/',
+    "https://hasura.io/jwt/claims": {
+      "x-hasura-allowed-roles": ["user"],
+      "x-hasura-user-id": id,
+      "x-hasura-default-role": "user",
+      "x-hasura-role": "user"
+    },
+    exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60)
+  }
+
+  return jwt.sign(tokenContents, secret);
+}
+
+export const getTokenContents = async (authorization: string, secret: jwt.Secret) => {
   if (authorization) {
     const [Bearer, token] = authorization.split(' ');
 
     if (token) {
       try {
-        return { id: token };// await jwt.verify(token, process.env.HASURA_SECRET);
+        const data: any = jwt.verify(token, secret);
+        return data;
       } catch (e) {
-        throw new AuthenticationError(
+        throw new Error(
           'Your session expired. Sign in again.',
         );
       }
     }
   }
-};
-
-export const createToken = async (data: any, error: Error) => {
-  try {
-    return data.id;// await jwt.sign(data, process.env.HASURA_SECRET);
-  } catch (e) {
-    throw error;
-  }
-}
-
-export const generatePasswordHash = (password: string) => {
-  return md5(password);
 };
 
 export const doQuery = async (GQLQuery: DocumentNode, GQLVariables: any) => {
