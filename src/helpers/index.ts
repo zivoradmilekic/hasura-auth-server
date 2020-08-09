@@ -10,9 +10,9 @@ const getGravatar = (email: string) => {
 export const generateAccessToken = ({id, name, username, email}: any, secret: jwt.Secret) => {
   const tokenContents = {
     sub: id,
-    name: name,
-    username: username,
-    emial: email,
+    name,
+    username,
+    email,
     gravatar: getGravatar(email),
     iat: Date.now() / 1000,
     // iss: 'https://myapp.com/',
